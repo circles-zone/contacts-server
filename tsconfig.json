@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "commonjs",
+    "outDir": "dist",
+    "rootDir": "../",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true
+  },
+  "include": [
+    "src",
+    "../contacts-local-graphql-typescript-package/src/graphql/typeDefs.ts",
+    "../contacts-local-graphql-typescript-package/src/graphql/resolvers.ts"
+  ]
+}
