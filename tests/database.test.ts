@@ -91,19 +91,16 @@ describe("Database Module", () => {
     });
 
     it("should return false when connection fails", async () => {
-      const config: DbConfig = {
-        host: "invalid-host-that-does-not-exist",
-        user: "test",
-        password: "pass",
-        database: "db",
-        port: 9999,
-      };
+      // Create a mock pool that fails
+      const mockPool = {
+        query: jest.fn().mockRejectedValue(new Error("Mock connection error")),
+        end: jest.fn(),
+      } as any;
 
-      const pool = createPool(config);
-      const result = await testConnection(pool);
+      const result = await testConnection(mockPool);
 
       expect(result).toBe(false);
-      await pool.end();
+      expect(mockPool.query).toHaveBeenCalledWith("SELECT 1");
     });
   });
 });
