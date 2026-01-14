@@ -55,6 +55,14 @@ const typeDefs = gql`
   }
 `;
 
+interface DbRow {
+  id: string;
+  name: string;
+  email: string;
+  phone: string | null;
+  updatedAt: string;
+}
+
 const resolvers = {
   Query: {
     contacts: async () => {
@@ -77,7 +85,7 @@ const resolvers = {
             Array.isArray(rows) ? rows.length : 0
           } contacts from database`
         );
-        return (rows as any[]).map((row) => ({
+        return (rows as DbRow[]).map((row) => ({
           ...row,
           name: row.name?.trim() || "לא ידוע",
           email: row.email || "unknown@example.com",

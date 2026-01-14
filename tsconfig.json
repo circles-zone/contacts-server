@@ -1,16 +1,27 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
-    "module": "commonjs",
-    "outDir": "dist",
-    "rootDir": "../",
-    "strict": true,
+    /* Visit https://aka.ms/tsconfig to read more about this file */
+
+    /* Language and Environment */
+    "target": "ES2020",                // To match serverless.com runtime
+    "lib": [],                         /* Specify a set of bundled library declaration files that describe the target runtime environment. */
+    "module": "commonjs",              /* Specify what module code is generated. i.e. CommonJS*/
+    "rootDir": "./src",                                  /* Specify the root folder within your source files. */
+    "moduleResolution": "node",                     /* Specify how TypeScript looks up a file from a given module specifier. node is the default for commonjs */
+    "declaration": true,
+    "sourceMap": true,                 // For debugging, Create source map files for emitted JavaScript files.
+    "outDir": "./dist",                // For package exporting
+    "strict": true,                    // For typescript compiler settings 
+    "noImplicitReturns": true,
+    "noUnusedParameters": true,
+    "noImplicitAny": true,
+    "noEmitOnError": true,
+    "noUncheckedIndexedAccess": true,
+    "typeRoots": ["./node_modules/@types/"],        // For typescript compiler settings
     "esModuleInterop": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "resolveJsonModule": true
   },
-  "include": [
-    "src",
-    "../contacts-local-graphql-typescript-package/src/graphql/typeDefs.ts",
-    "../contacts-local-graphql-typescript-package/src/graphql/resolvers.ts"
-  ]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules","__tests__"]
 }

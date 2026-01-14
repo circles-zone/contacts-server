@@ -1,22 +1,31 @@
 # contacts-server
 
-Node.js backend server using Apollo GraphQL and TypeScript.
+## Overview
 
-## פקודות בסיסיות
+Node.js backend server using Apollo GraphQL and TypeScript for the Circles-Zone contacts system.
 
-- התקנת תלויות:
-  ```bash
-  npm install
-  ```
-- הרצת פיתוח:
-  ```bash
-  npm run dev
-  ```
-- הרצה רגילה:
-  ```bash
-  npm start
-  ```
+## Features
 
-## תיאור
+- Apollo GraphQL server
+- TypeScript support
+- MySQL and MongoDB integration (extensible)
+- GitHub Actions for CI/CD and package publishing
 
-שרת Apollo GraphQL בסיסי, מוכן להרחבה עם MySQL ו-MongoDB בשלבים הבאים.
+## Getting Started
+
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+2. Start development server:
+   ```bash
+   npm run dev
+   ```
+3. Start production server:
+   ```bash
+   npm start
+   ```
+
+## License
+
+Private – Circles-Zone internal use only.

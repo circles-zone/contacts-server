@@ -1,0 +1,69 @@
+# Copy of build & publish workflow for TypeScript package (dvlp1)
+# Adjust 'repo_name' and other env vars as needed for each repo
+
+name: Build & Publish TypeScript Package dvlp1
+
+on:
+  push:
+    branches: [dev]
+  pull_request:
+    branches: [main]
+
+env:
+  brand: Circlez
+  environment_name: dvlp1
+  repo_name: .
+
+jobs:
+  build_publish:
+    name: Build & Publish TypeScript Package
+    runs-on: ubuntu-latest
+    environment:
+      name: dvlp1
+      url: http://${{ env.environment_name }}.circ.zone
+    permissions:
+      contents: read
+      packages: read
+      pull-requests: write
+    strategy:
+      matrix:
+        node-version: [20.x]
+    steps:
+      - uses: actions/checkout@main
+      - uses: actions/setup-node@main
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Create .npmrc for GitHub Packages
+        run: |
+          echo "@circles-zone:registry=https://npm.pkg.github.com" > .npmrc
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GH_READ_REPO_TOKEN }}" >> .npmrc
+      - name: npm i
+        run: |
+          cd ./$repo_name
+          npm i
+      - name: npx tsc
+        run: |
+          cd ./$repo_name
+          npx tsc
+      - name: npm run lint
+        run: |
+          cd ./$repo_name
+          npm run lint
+      - name: npm test
+        run: |
+          npm test --detectOpenHandles --coverage
+  publish-gpr:
+    name: Publish in GitHub Package Registry (GPR)
+    needs: build_publish
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+    steps:
+      - uses: actions/checkout@main
+      - uses: actions/setup-node@main
+        with:
+          node-version: 20
+          registry-url: "https://npm.pkg.github.com"
+      - name: Publish package
+        run: |
+          npm publish

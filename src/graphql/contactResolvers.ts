@@ -8,6 +8,14 @@ export interface Contact {
   updatedAt: string;
 }
 
+interface DbRow {
+  id: string;
+  name: string;
+  email: string;
+  phone: string | null;
+  updatedAt: string;
+}
+
 export function createResolvers(pool: Pool) {
   return {
     Query: {
@@ -26,7 +34,7 @@ export function createResolvers(pool: Pool) {
             LIMIT 50
           `);
 
-          return (rows as any[]).map((row) => ({
+          return (rows as DbRow[]).map((row) => ({
             ...row,
             name: row.name?.trim() || "לא ידוע",
             email: row.email || "unknown@example.com",
@@ -42,7 +50,7 @@ export function createResolvers(pool: Pool) {
   };
 }
 
-export function formatContact(row: any): Contact {
+export function formatContact(row: DbRow): Contact {
   return {
     id: row.id,
     name: row.name?.trim() || "לא ידוע",
