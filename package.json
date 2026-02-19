@@ -1,6 +1,6 @@
 {
   "name": "@circles-zone/contacts-server",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Apollo GraphQL server for contacts system https://github.com/circles-zone/contacts-server/pkgs/npm/contacts-server",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -29,7 +29,7 @@
     "graphql": ">=16.12.0",
     "graphql-tag": ">=2.12.6",
     "mysql2": ">=3.16.0",
-    "@circles-zone/contacts-local": "file:../contacts-local-typescript-package"
+    "@circles-zone/contacts-local-typescript-package": "0.0.4"
   },
   "devDependencies": {
     "@types/jest": "^30.0.0",
