@@ -29,7 +29,7 @@
     "graphql": ">=16.12.0",
     "graphql-tag": ">=2.12.6",
     "mysql2": ">=3.16.0",
-    "@circles-zone/contacts-local-typescript-package": "0.0.4"
+    "@circles-zone/contacts-local-typescript-package": "file:../contacts-local-typescript-package"
   },
   "devDependencies": {
     "@types/jest": "^30.0.0",

@@ -1,7 +1,7 @@
 import { ApolloServer } from "apollo-server";
 import { gql } from "graphql-tag";
 import * as dotenv from "dotenv";
-import { getAllContacts } from "@circles-zone/contacts-local";
+import { getAllContacts } from "@circles-zone/contacts-local-typescript-package";
 
 dotenv.config();
 
@@ -25,7 +25,7 @@ const resolvers = {
       try {
         const contacts = await getAllContacts();
         console.log(`Found ${contacts.length} contacts from database`);
-        return contacts.map((contact) => ({
+        return contacts.map((contact: any) => ({
           ...contact,
           name: contact.name?.trim() || "לא ידוע",
           email: contact.email || "unknown@example.com",
