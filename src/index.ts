@@ -25,7 +25,7 @@ const resolvers = {
       try {
         const contacts = await getAllContacts();
         console.log(`Found ${contacts.length} contacts from database`);
-        return contacts.map((contact: any) => ({
+        return contacts.map((contact: { id: string; name?: string; email?: string; phone?: string; updatedAt?: string }) => ({
           ...contact,
           name: contact.name?.trim() || "לא ידוע",
           email: contact.email || "unknown@example.com",
