@@ -21,7 +21,7 @@ export function createResolvers(pool: Pool) {
     Query: {
       contacts: async (): Promise<Contact[]> => {
         try {
-          const [rows] = await pool.query(`
+          const query = `
             SELECT 
               v.contact_id AS id, 
               CONCAT_WS(' ', v.first_name, v.last_name) AS name, 
@@ -31,8 +31,9 @@ export function createResolvers(pool: Pool) {
             FROM contact_recent_general_view v
             LEFT JOIN contact_table t ON t.contact_id = v.contact_id
             ORDER BY v.updated_timestamp DESC
-            LIMIT 50
-          `);
+            LIMIT ?
+          `;
+          const [rows] = await pool.query(query, [50]);
 
           return (rows as DbRow[]).map((row) => ({
             ...row,

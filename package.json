@@ -25,7 +25,7 @@
   "dependencies": {
     "@apollo/client": ">=4.0.11",
     "@circles-zone/contacts-local-typescript-package": "file:../contacts-local-typescript-package",
-    "apollo-server": "^0.3.3",
+    "apollo-server": "^3.13.0",
     "dotenv": ">=17.2.3",
     "graphql": ">=16.12.0",
     "graphql-tag": ">=2.12.6",
