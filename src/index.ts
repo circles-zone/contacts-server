@@ -2,7 +2,11 @@ import { ApolloServer } from "apollo-server";
 import { gql } from "graphql-tag";
 import * as dotenv from "dotenv";
 
-import { getAllContacts } from "@circles-zone/contacts-local-typescript-package";
+import {
+  getAllContacts,
+  updateContact,
+  deleteContact,
+} from "@circles-zone/contacts-local-typescript-package";
 
 dotenv.config();
 
@@ -18,6 +22,11 @@ const typeDefs = gql`
   type Query {
     contacts: [Contact!]!
   }
+
+  type Mutation {
+    updateContact(id: ID!, name: String!, phone: String, email: String): Contact
+    deleteContact(id: ID!): Boolean!
+  }
 `;
 
 const resolvers = {
@@ -32,7 +41,7 @@ const resolvers = {
             name?: string;
             email?: string;
             phone?: string;
-            updatedAt?: string;
+            updatedAt?: string | null;
           }) => ({
             ...contact,
             name: contact.name?.trim() || "לא ידוע",
@@ -43,6 +52,39 @@ const resolvers = {
       } catch (error) {
         console.error("Database error:", error);
         return [];
+      }
+    },
+  },
+  Mutation: {
+    updateContact: async (
+      _: unknown,
+      {
+        id,
+        name,
+        phone,
+        email,
+      }: { id: string; name: string; phone?: string; email?: string },
+    ) => {
+      try {
+        const updated = await updateContact(id, name, phone, email);
+        if (!updated) return null;
+        return {
+          ...updated,
+          name: (updated.name as string)?.trim() || "לא ידוע",
+          email: updated.email || "unknown@example.com",
+          phone: updated.phone || null,
+        };
+      } catch (error) {
+        console.error("Update error:", error);
+        throw new Error("Failed to update contact");
+      }
+    },
+    deleteContact: async (_: unknown, { id }: { id: string }) => {
+      try {
+        return await deleteContact(id);
+      } catch (error) {
+        console.error("Delete error:", error);
+        throw new Error("Failed to delete contact");
       }
     },
   },
