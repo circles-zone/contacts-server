@@ -8,3 +8,8 @@ coverage/
 .DS_Store
 Thumbs.db
 *.log
+
+
+
+**/coverage/**/*
+
