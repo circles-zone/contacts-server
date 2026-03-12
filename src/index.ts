@@ -67,6 +67,7 @@ const resolvers = {
   Mutation: {
     addContact: async (
       _: unknown,
+      // TODO .... emailAddress: EmailAddress; phoneNumber : PhoneNumber
       { input }: { input: { name: string; email: string; phone: string } },
     ) => {
       try {
