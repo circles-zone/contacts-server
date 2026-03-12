@@ -31,6 +31,7 @@ const typeDefs = gql`
   }
 
   type Mutation {
+    // TODO addContact( contact: ContactLocal)
     addContact(input: AddContactInput!): Contact
     updateContact(id: ID!, name: String!, phone: String, email: String): Contact
     deleteContact(id: ID!): Boolean!
