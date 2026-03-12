@@ -80,6 +80,7 @@ const resolvers = {
           phone: newContact.phone || null,
         };
       } catch (error) {
+        // TODO Error Handling using logger.error()
         console.error("Add error:", error);
         throw new Error("Failed to add contact");
       }
