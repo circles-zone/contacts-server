@@ -99,6 +99,7 @@ const resolvers = {
         if (!updated) return null;
         return {
           ...updated,
+          // TODO Please replace all Hebrew with English everywhere
           name: (updated.name as string)?.trim() || "לא ידוע",
           email: updated.email || "",
           phone: updated.phone || null,
