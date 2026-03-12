@@ -4,6 +4,7 @@ import * as dotenv from "dotenv";
 
 import {
   getAllContacts,
+  addContact,
   updateContact,
   deleteContact,
 } from "@circles-zone/contacts-local-typescript-package";
@@ -23,7 +24,14 @@ const typeDefs = gql`
     contacts: [Contact!]!
   }
 
+  input AddContactInput {
+    name: String!
+    email: String!
+    phone: String!
+  }
+
   type Mutation {
+    addContact(input: AddContactInput!): Contact
     updateContact(id: ID!, name: String!, phone: String, email: String): Contact
     deleteContact(id: ID!): Boolean!
   }
@@ -45,7 +53,7 @@ const resolvers = {
           }) => ({
             ...contact,
             name: contact.name?.trim() || "לא ידוע",
-            email: contact.email || "unknown@example.com",
+            email: contact.email || "",
             phone: contact.phone || null,
           }),
         );
@@ -56,6 +64,24 @@ const resolvers = {
     },
   },
   Mutation: {
+    addContact: async (
+      _: unknown,
+      { input }: { input: { name: string; email: string; phone: string } },
+    ) => {
+      try {
+        const newContact = await addContact(input.name, input.phone, input.email);
+        if (!newContact) return null;
+        return {
+          ...newContact,
+          name: (newContact.name as string)?.trim() || "לא ידוע",
+          email: newContact.email || "",
+          phone: newContact.phone || null,
+        };
+      } catch (error) {
+        console.error("Add error:", error);
+        throw new Error("Failed to add contact");
+      }
+    },
     updateContact: async (
       _: unknown,
       {
@@ -71,7 +97,7 @@ const resolvers = {
         return {
           ...updated,
           name: (updated.name as string)?.trim() || "לא ידוע",
-          email: updated.email || "unknown@example.com",
+          email: updated.email || "",
           phone: updated.phone || null,
         };
       } catch (error) {
