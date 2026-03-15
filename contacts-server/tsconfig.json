@@ -4,7 +4,7 @@
     "module": "NodeNext",              /* Specify what module code is generated. */
     "target": "ESNext",                /* Set the JavaScript language version for emitted JavaScript. */
     "sourceMap": true,                 // For debugging
-    "rootDir": "./contacts-server/src", /* Specify the root folder within your source files. */
+    "rootDir": "./src", /* Specify the root folder within your source files. */
     "outDir": "./dist",                // For package exporting
     "declaration": true,
     "strict": true,                    // For typescript compiler settings
