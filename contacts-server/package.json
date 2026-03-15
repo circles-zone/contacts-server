@@ -28,7 +28,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/e2e/jest-e2e.json",
-    "dev": "ts-node-dev contacts-server/src/index.ts",
+    "dev": "tsx watch src/index.ts",
     "start": "node dist/index.js"
   },
   "dependencies": {
@@ -59,6 +59,7 @@
     "ts-jest": "^29.2.4",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
+    "tsx": "^4.21.0",
     "typescript": "5.9.3",
     "typescript-eslint": "8.42.0"
   }
