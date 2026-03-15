@@ -1,5 +1,4 @@
 import { ApolloServer, gql } from "apollo-server";
-import request from "supertest";
 
 describe("ApolloServer", () => {
   let server: ApolloServer;
