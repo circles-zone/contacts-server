@@ -26,12 +26,15 @@ const typeDefs = gql`
 
   input AddContactInput {
     name: String!
+    # TODO emailAddress: EmailAddress!
     email: String!
+    # TODO phoneNumber: PhoneNumber!
     phone: String!
   }
 
   type Mutation {
-    addContact(input: AddContactInput!): Contact
+    # TODO addContact( contact : ContactLocal )
+    addContact(contact: AddContactInput!): Contact
     updateContact(id: ID!, name: String!, phone: String, email: String): Contact
     deleteContact(id: ID!): Boolean!
   }
@@ -52,7 +55,7 @@ const resolvers = {
             updatedAt?: string | null;
           }) => ({
             ...contact,
-            name: contact.name?.trim() || "לא ידוע",
+            name: contact.name?.trim() || "Unknown",
             email: contact.email || "",
             phone: contact.phone || null,
           }),
@@ -66,14 +69,15 @@ const resolvers = {
   Mutation: {
     addContact: async (
       _: unknown,
-      { input }: { input: { name: string; email: string; phone: string } },
+      // TODO email: EmailAddress
+      { contact }: { contact: { name: string; email: string; phone: string } },
     ) => {
       try {
-        const newContact = await addContact(input.name, input.phone, input.email);
+        const newContact = await addContact(contact.name, contact.phone, contact.email);
         if (!newContact) return null;
         return {
           ...newContact,
-          name: (newContact.name as string)?.trim() || "לא ידוע",
+          name: (newContact.name as string)?.trim() || "Unknown",
           email: newContact.email || "",
           phone: newContact.phone || null,
         };
@@ -96,7 +100,7 @@ const resolvers = {
         if (!updated) return null;
         return {
           ...updated,
-          name: (updated.name as string)?.trim() || "לא ידוע",
+          name: (updated.name as string)?.trim() || "Unknown",
           email: updated.email || "",
           phone: updated.phone || null,
         };

@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "@apollo/client": ">=4.0.11",
-    "@circles-zone/contacts-local-typescript-package": "file:../../contacts-local-typescript-package",
+    "@circles-zone/contacts-local-typescript-package": "file:../../contacts-local-typescript-package/contacts-local-typescript-package",
     "apollo-server": "^3.13.0",
     "dotenv": ">=17.2.3",
     "graphql": ">=16.12.0",
