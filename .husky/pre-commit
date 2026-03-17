@@ -1,1 +1,1 @@
-cd ./contacts-server && npm test
+cd ./contacts-server/contacts-server && npm test
