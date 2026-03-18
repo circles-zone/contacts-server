@@ -1,5 +1,8 @@
 # contacts-server
 
+## TODOs
+TODO Let's rename this repo name according to our standard naming convention
+
 ## Overview
 
 Node.js backend server using Apollo GraphQL and TypeScript for the Circles-Zone contacts system.

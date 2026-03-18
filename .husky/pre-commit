@@ -1,0 +1,1 @@
+cd ./contacts-server/contacts-server && npm test

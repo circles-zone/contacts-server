@@ -1,3 +1,5 @@
+import { jest } from "@jest/globals";
+import mysql from "mysql2/promise";
 import {
   getDbConfig,
   testConnection,
@@ -82,7 +84,7 @@ describe("Database Module", () => {
       const mockPool = {
         query: jest.fn().mockResolvedValue([{ 1: 1 }]),
         end: jest.fn(),
-      } as any;
+      } as unknown as mysql.Pool;
 
       const result = await testConnection(mockPool);
 
@@ -95,7 +97,7 @@ describe("Database Module", () => {
       const mockPool = {
         query: jest.fn().mockRejectedValue(new Error("Mock connection error")),
         end: jest.fn(),
-      } as any;
+      } as unknown as mysql.Pool;
 
       const result = await testConnection(mockPool);
 

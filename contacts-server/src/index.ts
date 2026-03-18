@@ -4,6 +4,7 @@ import * as dotenv from "dotenv";
 
 import {
   getAllContacts,
+  addContact,
   updateContact,
   deleteContact,
 } from "@circles-zone/contacts-local-typescript-package";
@@ -23,7 +24,17 @@ const typeDefs = gql`
     contacts: [Contact!]!
   }
 
+  input AddContactInput {
+    name: String!
+    # TODO emailAddress: EmailAddress!
+    email: String!
+    # TODO phoneNumber: PhoneNumber!
+    phone: String!
+  }
+
   type Mutation {
+    # TODO addContact( contact : ContactLocal )
+    addContact(contact: AddContactInput!): Contact
     updateContact(id: ID!, name: String!, phone: String, email: String): Contact
     deleteContact(id: ID!): Boolean!
   }
@@ -44,8 +55,8 @@ const resolvers = {
             updatedAt?: string | null;
           }) => ({
             ...contact,
-            name: contact.name?.trim() || "לא ידוע",
-            email: contact.email || "unknown@example.com",
+            name: contact.name?.trim() || "Unknown",
+            email: contact.email || "",
             phone: contact.phone || null,
           }),
         );
@@ -56,6 +67,25 @@ const resolvers = {
     },
   },
   Mutation: {
+    addContact: async (
+      _: unknown,
+      // TODO email: EmailAddress
+      { contact }: { contact: { name: string; email: string; phone: string } },
+    ) => {
+      try {
+        const newContact = await addContact(contact.name, contact.phone, contact.email);
+        if (!newContact) return null;
+        return {
+          ...newContact,
+          name: (newContact.name as string)?.trim() || "Unknown",
+          email: newContact.email || "",
+          phone: newContact.phone || null,
+        };
+      } catch (error) {
+        console.error("Add error:", error);
+        throw new Error("Failed to add contact");
+      }
+    },
     updateContact: async (
       _: unknown,
       {
@@ -70,8 +100,8 @@ const resolvers = {
         if (!updated) return null;
         return {
           ...updated,
-          name: (updated.name as string)?.trim() || "לא ידוע",
-          email: updated.email || "unknown@example.com",
+          name: (updated.name as string)?.trim() || "Unknown",
+          email: updated.email || "",
           phone: updated.phone || null,
         };
       } catch (error) {
