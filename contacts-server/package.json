@@ -24,6 +24,7 @@
     "build_full": "npm update && npx tsc",
     "lint": "eslint **/src/**/*.ts **/tests/**/*.ts --ignore-pattern **/dist/**/*.ts --no-warn-ignored --report-unused-disable-directives --max-warnings 0 --fix",
     "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --config ./jest.config.mjs --forceExit --detectOpenHandles --coverage",
+    "test:coverage": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --config ./jest.config.mjs --forceExit --detectOpenHandles --coverage --watchAll=false",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
