@@ -1,3 +1,5 @@
+// Why do we need src/db/database.ts if we are using GraphQL to access the database?
+
 import mysql from "mysql2/promise";
 import * as dotenv from "dotenv";
 
