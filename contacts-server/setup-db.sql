@@ -1,3 +1,5 @@
+-- TODO Please use our contact_table from https://github.com/circles-zone/contact-main-local-python-package/blob/dev/contact-main-local-python-package/database/mysql/schema/contact_table.sql and delete setup-db.sql from the repo.
+
 CREATE DATABASE IF NOT EXISTS contacts_db;
 USE contacts_db;
 
