@@ -1,3 +1,5 @@
+// TODO Why do we need this file in this repo - This is a generic file
+
 const mysql = require('mysql2/promise');
 require('dotenv').config();
 
