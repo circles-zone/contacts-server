@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# TODO I'm not sure we need this file
+
 # AWS Deployment Script for Contacts Server
 
 echo "🚀 Starting AWS deployment..."
