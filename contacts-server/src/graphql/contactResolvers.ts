@@ -8,6 +8,7 @@ export interface Contact {
   updatedAt: string;
 }
 
+// TODO Should we rename it to ContactTableDatabaseRow?
 interface DbRow {
   id: string;
   name: string;
