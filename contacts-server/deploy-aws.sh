@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# TODO I'm not sure we need this file
+# TODO I'm not sure we need this file - Please delete it.
 
 # AWS Deployment Script for Contacts Server
 
