@@ -21,6 +21,7 @@ export function createResolvers(pool: Pool) {
     Query: {
       contacts: async (): Promise<Contact[]> => {
         try {
+          // TODO let's have two altermatives to access the databse 1. direct 2. via GenericCrudMysql from database-mysql-local-python-package and compare the performance
           const query = `
             SELECT 
               v.contact_id AS id, 
