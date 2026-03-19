@@ -1,5 +1,6 @@
 import { Pool } from "mysql2/promise";
 
+// TODO after we add other database tables which are linked to contact_table will Contact be exactly is the DatabaeRaw interface? If so it is redundant.
 export interface Contact {
   id: string;
   name: string;
@@ -46,6 +47,7 @@ export function createResolvers(pool: Pool) {
             updatedAt: row.updatedAt,
           }));
         } catch (error) {
+          // TODO make sure every place we call console.* we call our logger from logger-remote-typescript-package
           console.error("Database error:", error);
           return [];
         }
