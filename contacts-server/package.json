@@ -37,6 +37,7 @@
     "@circles-zone/contacts-local-typescript-package": "file:../../contacts-local-typescript-package/contacts-local-typescript-package",
     "apollo-server": "^3.13.0",
     "dotenv": ">=17.2.3",
+    "flatted": "^3.4.2",
     "graphql": ">=16.12.0",
     "graphql-tag": ">=2.12.6",
     "mysql2": ">=3.16.0"
