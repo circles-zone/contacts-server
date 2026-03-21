@@ -1,4 +1,5 @@
-import { ApolloServer } from "apollo-server";
+import { ApolloServer } from "@apollo/server";
+import { startStandaloneServer } from "@apollo/server/standalone";
 import { gql } from "graphql-tag";
 import * as dotenv from "dotenv";
 
@@ -131,17 +132,10 @@ const resolvers = {
   },
 };
 
-const server = new ApolloServer({
-  typeDefs,
-  resolvers,
-  cors: {
-    origin: true,
-    credentials: true,
-  },
-});
+const server = new ApolloServer({ typeDefs, resolvers });
 
 const port = process.env.PORT ? Number(process.env.PORT) : 5002;
-server.listen({ port }).then(({ url }: { url: string }) => {
-  console.log(`🚀 GraphQL Server ready at ${url}`);
-  console.log(`📊 GraphQL Playground available at ${url}`);
+const { url } = await startStandaloneServer(server, {
+  listen: { port },
 });
+console.log(`🚀 GraphQL Server ready at ${url}`);
