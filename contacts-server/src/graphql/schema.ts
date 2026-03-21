@@ -5,7 +5,8 @@ import { gql } from "graphql-tag";
 export const typeDefs = gql`
   type Contact {
     id: ID!
-    name: String!
+    firstName: String!
+    lastName: String
     email: String!
     phone: String
     updatedAt: String
