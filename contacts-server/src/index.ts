@@ -80,8 +80,7 @@ const resolvers = {
       { contact }: { contact: { firstName: string; lastName?: string; email: string; phone: string } },
     ) => {
       try {
-        const name = [contact.firstName, contact.lastName].filter(Boolean).join(" ");
-        const newContact = await addContact(name, contact.phone, contact.email);
+        const newContact = await addContact(contact.firstName, contact.lastName, contact.phone, contact.email);
         if (!newContact) return null;
         return {
           ...newContact,
@@ -106,8 +105,7 @@ const resolvers = {
       }: { id: string; firstName: string; lastName?: string; phone?: string; email?: string },
     ) => {
       try {
-        const name = [firstName, lastName].filter(Boolean).join(" ");
-        const updated = await updateContact(id, name, phone, email);
+        const updated = await updateContact(id, firstName, lastName, phone, email);
         if (!updated) return null;
         return {
           ...updated,
