@@ -47,7 +47,7 @@ describe("Contact Resolvers", () => {
     it("should use default firstName when firstName is null", () => {
       const row = {
         id: "1",
-        firstName: null as any,
+        firstName: null as unknown as string,
         lastName: null,
         email: "john@example.com",
         phone: "123456789",
@@ -64,7 +64,7 @@ describe("Contact Resolvers", () => {
         id: "1",
         firstName: "John",
         lastName: null,
-        email: null as any,
+        email: null as unknown as string,
         phone: "123456789",
         updatedAt: "2024-01-01",
       };
@@ -93,7 +93,7 @@ describe("Contact Resolvers", () => {
   describe("createResolvers", () => {
     it("should create resolvers with Query.contacts", () => {
       const mockPool = {
-        query: jest.fn().mockResolvedValue([[]]),
+        query: jest.fn<() => Promise<unknown>>().mockResolvedValue([[]]),
       } as unknown as mysql.Pool;
 
       const resolvers = createResolvers(mockPool);
@@ -117,7 +117,7 @@ describe("Contact Resolvers", () => {
       ];
 
       const mockPool = {
-        query: jest.fn().mockResolvedValue([mockRows]),
+        query: jest.fn<() => Promise<unknown>>().mockResolvedValue([mockRows]),
       } as unknown as mysql.Pool;
 
       const resolvers = createResolvers(mockPool);
@@ -141,7 +141,7 @@ describe("Contact Resolvers", () => {
       ];
 
       const mockPool = {
-        query: jest.fn().mockResolvedValue([mockRows]),
+        query: jest.fn<() => Promise<unknown>>().mockResolvedValue([mockRows]),
       } as unknown as mysql.Pool;
 
       const resolvers = createResolvers(mockPool);
@@ -164,7 +164,7 @@ describe("Contact Resolvers", () => {
       ];
 
       const mockPool = {
-        query: jest.fn().mockResolvedValue([mockRows]),
+        query: jest.fn<() => Promise<unknown>>().mockResolvedValue([mockRows]),
       } as unknown as mysql.Pool;
 
       const resolvers = createResolvers(mockPool);
@@ -187,7 +187,7 @@ describe("Contact Resolvers", () => {
       ];
 
       const mockPool = {
-        query: jest.fn().mockResolvedValue([mockRows]),
+        query: jest.fn<() => Promise<unknown>>().mockResolvedValue([mockRows]),
       } as unknown as mysql.Pool;
 
       const resolvers = createResolvers(mockPool);
@@ -210,7 +210,7 @@ describe("Contact Resolvers", () => {
       ];
 
       const mockPool = {
-        query: jest.fn().mockResolvedValue([mockRows]),
+        query: jest.fn<() => Promise<unknown>>().mockResolvedValue([mockRows]),
       } as unknown as mysql.Pool;
 
       const resolvers = createResolvers(mockPool);
@@ -222,7 +222,7 @@ describe("Contact Resolvers", () => {
 
     it("should return empty array on database error", async () => {
       const mockPool = {
-        query: jest.fn().mockRejectedValue(new Error("DB Error")),
+        query: jest.fn<() => Promise<unknown>>().mockRejectedValue(new Error("DB Error")),
       } as unknown as mysql.Pool;
 
       const resolvers = createResolvers(mockPool);
@@ -233,7 +233,7 @@ describe("Contact Resolvers", () => {
 
     it("should handle empty result set", async () => {
       const mockPool = {
-        query: jest.fn().mockResolvedValue([[]]),
+        query: jest.fn<() => Promise<unknown>>().mockResolvedValue([[]]),
       } as unknown as mysql.Pool;
 
       const resolvers = createResolvers(mockPool);
