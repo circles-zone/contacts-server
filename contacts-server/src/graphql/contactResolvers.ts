@@ -44,7 +44,7 @@ export function createResolvers(pool: Pool) {
 
           return (rows as DbRow[]).map((row) => ({
             ...row,
-            firstName: row.firstName?.trim() || "לא ידוע",
+            firstName: row.firstName?.trim() || "Unknown",
             lastName: row.lastName?.trim() || null,
             email: row.email || "unknown@example.com",
             phone: row.phone || null,
@@ -63,7 +63,7 @@ export function createResolvers(pool: Pool) {
 export function formatContact(row: DbRow): Contact {
   return {
     id: row.id,
-    firstName: row.firstName?.trim() || "לא ידוע",
+    firstName: row.firstName?.trim() || "Unknown",
     lastName: row.lastName?.trim() || null,
     email: row.email || "unknown@example.com",
     phone: row.phone || null,
