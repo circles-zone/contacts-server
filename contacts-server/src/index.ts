@@ -54,16 +54,14 @@ const resolvers = {
             id: string;
             firstName?: string;
             lastName?: string;
-            name?: string;
             email?: string;
             phone?: string;
             updatedAt?: string | null;
           }) => {
-            const nameParts = (contact.name || "").trim().split(/\s+/);
             return {
               ...contact,
-              firstName: contact.firstName?.trim() || nameParts[0] || "Unknown",
-              lastName: contact.lastName?.trim() || nameParts.slice(1).join(" ") || null,
+              firstName: contact.firstName?.trim() || "Unknown",
+              lastName: contact.lastName?.trim() || null,
               email: contact.email || "",
               phone: contact.phone || null,
             };
@@ -85,11 +83,10 @@ const resolvers = {
         const name = [contact.firstName, contact.lastName].filter(Boolean).join(" ");
         const newContact = await addContact(name, contact.phone, contact.email);
         if (!newContact) return null;
-        const nameParts = (newContact.name as string)?.trim().split(" ") || [];
         return {
           ...newContact,
-          firstName: nameParts[0] || "Unknown",
-          lastName: nameParts.slice(1).join(" ") || null,
+          firstName: (newContact.firstName as string)?.trim() || "Unknown",
+          lastName: (newContact.lastName as string)?.trim() || null,
           email: newContact.email || "",
           phone: newContact.phone || null,
         };
@@ -112,11 +109,10 @@ const resolvers = {
         const name = [firstName, lastName].filter(Boolean).join(" ");
         const updated = await updateContact(id, name, phone, email);
         if (!updated) return null;
-        const nameParts = (updated.name as string)?.trim().split(" ") || [];
         return {
           ...updated,
-          firstName: nameParts[0] || "Unknown",
-          lastName: nameParts.slice(1).join(" ") || null,
+          firstName: (updated.firstName as string)?.trim() || "Unknown",
+          lastName: (updated.lastName as string)?.trim() || null,
           email: updated.email || "",
           phone: updated.phone || null,
         };

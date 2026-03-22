@@ -10,7 +10,8 @@ describe("GraphQL Schema", () => {
 
     expect(schemaString).toContain("type Contact");
     expect(schemaString).toContain("id: ID!");
-    expect(schemaString).toContain("name: String!");
+    expect(schemaString).toContain("firstName: String!");
+    expect(schemaString).toContain("lastName: String");
     expect(schemaString).toContain("email: String!");
     expect(schemaString).toContain("phone: String");
     expect(schemaString).toContain("updatedAt: String");

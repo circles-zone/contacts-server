@@ -17,7 +17,7 @@
     "tsc": "tsc",
     "compile": "npx tsc",
     "prebuild_comment": "TODO Should it be `prebuild` or `preinstall` https://stackoverflow.com/questions/41123631/how-to-get-the-version-from-the-package-json-in-typescript",
-    "prebuild": "node -p \"'export const PACKAGE_VERSION = ' + JSON.stringify(require('./package.json').version) + ';'\" > ./contacts-server/src/version.ts",
+    "prebuild": "node -p \"'export const PACKAGE_VERSION = ' + JSON.stringify(require('./package.json').version) + ';'\" > ./src/version.ts",
     "prebuild_new": "node -e \"import fs from 'fs'; import {createRequire} from 'module'; const require = createRequire(import.meta.url); const pkg = require('./package.json'); fs.writeFileSync('language-remote/src/version.ts', 'export const PACKAGE_VERSION = ' + JSON.stringify(pkg.version) + ';');\"",
     "build": "npm i && npx tsc",
     "build_fast": "npm i && npx tsc",

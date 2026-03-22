@@ -10,7 +10,8 @@ describe("Contact Resolvers", () => {
     it("should format contact with all fields", () => {
       const row = {
         id: "1",
-        name: "  John Doe  ",
+        firstName: "  John  ",
+        lastName: "  Doe  ",
         email: "john@example.com",
         phone: "123456789",
         updatedAt: "2024-01-01",
@@ -20,17 +21,19 @@ describe("Contact Resolvers", () => {
 
       expect(result).toEqual({
         id: "1",
-        name: "John Doe",
+        firstName: "John",
+        lastName: "Doe",
         email: "john@example.com",
         phone: "123456789",
         updatedAt: "2024-01-01",
       });
     });
 
-    it("should use default name when name is empty", () => {
+    it("should use default firstName when firstName is empty", () => {
       const row = {
         id: "1",
-        name: "   ",
+        firstName: "   ",
+        lastName: null,
         email: "john@example.com",
         phone: "123456789",
         updatedAt: "2024-01-01",
@@ -38,13 +41,14 @@ describe("Contact Resolvers", () => {
 
       const result = formatContact(row);
 
-      expect(result.name).toBe("לא ידוע");
+      expect(result.firstName).toBe("לא ידוע");
     });
 
-    it("should use default name when name is null", () => {
+    it("should use default firstName when firstName is null", () => {
       const row = {
         id: "1",
-        name: null,
+        firstName: null as any,
+        lastName: null,
         email: "john@example.com",
         phone: "123456789",
         updatedAt: "2024-01-01",
@@ -52,14 +56,15 @@ describe("Contact Resolvers", () => {
 
       const result = formatContact(row);
 
-      expect(result.name).toBe("לא ידוע");
+      expect(result.firstName).toBe("לא ידוע");
     });
 
     it("should use default email when email is missing", () => {
       const row = {
         id: "1",
-        name: "John",
-        email: null,
+        firstName: "John",
+        lastName: null,
+        email: null as any,
         phone: "123456789",
         updatedAt: "2024-01-01",
       };
@@ -72,7 +77,8 @@ describe("Contact Resolvers", () => {
     it("should set phone to null when phone is missing", () => {
       const row = {
         id: "1",
-        name: "John",
+        firstName: "John",
+        lastName: null,
         email: "john@example.com",
         phone: null,
         updatedAt: "2024-01-01",
@@ -102,7 +108,8 @@ describe("Contact Resolvers", () => {
       const mockRows = [
         {
           id: "1",
-          name: "John Doe",
+          firstName: "John",
+          lastName: "Doe",
           email: "john@example.com",
           phone: "123456789",
           updatedAt: "2024-01-01",
@@ -117,14 +124,16 @@ describe("Contact Resolvers", () => {
       const result = await resolvers.Query.contacts();
 
       expect(result).toHaveLength(1);
-      expect(result[0].name).toBe("John Doe");
+      expect(result[0].firstName).toBe("John");
+      expect(result[0].lastName).toBe("Doe");
     });
 
-    it("should handle contacts with missing name (applies default)", async () => {
+    it("should handle contacts with missing firstName (applies default)", async () => {
       const mockRows = [
         {
           id: "1",
-          name: null,
+          firstName: null,
+          lastName: null,
           email: "john@example.com",
           phone: "123456789",
           updatedAt: "2024-01-01",
@@ -139,14 +148,15 @@ describe("Contact Resolvers", () => {
       const result = await resolvers.Query.contacts();
 
       expect(result).toHaveLength(1);
-      expect(result[0].name).toBe("לא ידוע");
+      expect(result[0].firstName).toBe("לא ידוע");
     });
 
-    it("should handle contacts with whitespace-only name", async () => {
+    it("should handle contacts with whitespace-only firstName", async () => {
       const mockRows = [
         {
           id: "1",
-          name: "   ",
+          firstName: "   ",
+          lastName: null,
           email: "john@example.com",
           phone: "123456789",
           updatedAt: "2024-01-01",
@@ -161,14 +171,15 @@ describe("Contact Resolvers", () => {
       const result = await resolvers.Query.contacts();
 
       expect(result).toHaveLength(1);
-      expect(result[0].name).toBe("לא ידוע");
+      expect(result[0].firstName).toBe("לא ידוע");
     });
 
     it("should handle contacts with missing email (applies default)", async () => {
       const mockRows = [
         {
           id: "1",
-          name: "John Doe",
+          firstName: "John",
+          lastName: "Doe",
           email: null,
           phone: "123456789",
           updatedAt: "2024-01-01",
@@ -190,7 +201,8 @@ describe("Contact Resolvers", () => {
       const mockRows = [
         {
           id: "1",
-          name: "John Doe",
+          firstName: "John",
+          lastName: "Doe",
           email: "john@example.com",
           phone: null,
           updatedAt: "2024-01-01",
