@@ -38,9 +38,8 @@ export function createResolvers(pool: Pool) {
             FROM contact_recent_general_view v
             LEFT JOIN contact_table t ON t.contact_id = v.contact_id
             ORDER BY v.updated_timestamp DESC
-            LIMIT ?
           `;
-          const [rows] = await pool.query(query, [50]);
+          const [rows] = await pool.query(query);
 
           return (rows as DbRow[]).map((row) => ({
             ...row,
