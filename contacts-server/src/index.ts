@@ -54,16 +54,20 @@ const resolvers = {
             id: string;
             firstName?: string;
             lastName?: string;
+            name?: string;
             email?: string;
             phone?: string;
             updatedAt?: string | null;
-          }) => ({
-            ...contact,
-            firstName: contact.firstName?.trim() || "Unknown",
-            lastName: contact.lastName?.trim() || null,
-            email: contact.email || "",
-            phone: contact.phone || null,
-          }),
+          }) => {
+            const nameParts = (contact.name || "").trim().split(/\s+/);
+            return {
+              ...contact,
+              firstName: contact.firstName?.trim() || nameParts[0] || "Unknown",
+              lastName: contact.lastName?.trim() || nameParts.slice(1).join(" ") || null,
+              email: contact.email || "",
+              phone: contact.phone || null,
+            };
+          },
         );
       } catch (error) {
         console.error("Database error:", error);
