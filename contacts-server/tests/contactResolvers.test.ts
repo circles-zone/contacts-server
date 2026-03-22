@@ -41,7 +41,7 @@ describe("Contact Resolvers", () => {
 
       const result = formatContact(row);
 
-      expect(result.firstName).toBe("לא ידוע");
+      expect(result.firstName).toBe("Unknown");
     });
 
     it("should use default firstName when firstName is null", () => {
@@ -56,7 +56,7 @@ describe("Contact Resolvers", () => {
 
       const result = formatContact(row);
 
-      expect(result.firstName).toBe("לא ידוע");
+      expect(result.firstName).toBe("Unknown");
     });
 
     it("should use default email when email is missing", () => {
@@ -148,7 +148,7 @@ describe("Contact Resolvers", () => {
       const result = await resolvers.Query.contacts();
 
       expect(result).toHaveLength(1);
-      expect(result[0].firstName).toBe("לא ידוע");
+      expect(result[0].firstName).toBe("Unknown");
     });
 
     it("should handle contacts with whitespace-only firstName", async () => {
@@ -171,7 +171,7 @@ describe("Contact Resolvers", () => {
       const result = await resolvers.Query.contacts();
 
       expect(result).toHaveLength(1);
-      expect(result[0].firstName).toBe("לא ידוע");
+      expect(result[0].firstName).toBe("Unknown");
     });
 
     it("should handle contacts with missing email (applies default)", async () => {
