@@ -14,7 +14,8 @@ dotenv.config();
 const typeDefs = gql`
   type Contact {
     id: ID!
-    name: String!
+    firstName: String!
+    lastName: String
     email: String!
     phone: String
     updatedAt: String
@@ -25,17 +26,15 @@ const typeDefs = gql`
   }
 
   input AddContactInput {
-    name: String!
-    # TODO emailAddress: EmailAddress!
+    firstName: String!
+    lastName: String
     email: String!
-    # TODO phoneNumber: PhoneNumber!
     phone: String!
   }
 
   type Mutation {
-    # TODO addContact( contact : ContactLocal )
     addContact(contact: AddContactInput!): Contact
-    updateContact(id: ID!, name: String!, phone: String, email: String): Contact
+    updateContact(id: ID!, firstName: String!, lastName: String, phone: String, email: String): Contact
     deleteContact(id: ID!): Boolean!
   }
 `;
@@ -49,13 +48,15 @@ const resolvers = {
         return contacts.map(
           (contact: {
             id: string;
-            name?: string;
+            firstName?: string;
+            lastName?: string;
             email?: string;
             phone?: string;
             updatedAt?: string | null;
           }) => ({
             ...contact,
-            name: contact.name?.trim() || "Unknown",
+            firstName: contact.firstName?.trim() || "Unknown",
+            lastName: contact.lastName?.trim() || null,
             email: contact.email || "",
             phone: contact.phone || null,
           }),
@@ -70,14 +71,15 @@ const resolvers = {
     addContact: async (
       _: unknown,
       // TODO email: EmailAddress
-      { contact }: { contact: { name: string; email: string; phone: string } },
+      { contact }: { contact: { firstName: string; lastName?: string; email: string; phone: string } },
     ) => {
       try {
-        const newContact = await addContact(contact.name, contact.phone, contact.email);
+        const newContact = await addContact(contact.firstName, contact.lastName, contact.phone, contact.email);
         if (!newContact) return null;
         return {
           ...newContact,
-          name: (newContact.name as string)?.trim() || "Unknown",
+          firstName: (newContact.firstName as string)?.trim() || "Unknown",
+          lastName: (newContact.lastName as string)?.trim() || null,
           email: newContact.email || "",
           phone: newContact.phone || null,
         };
@@ -90,17 +92,19 @@ const resolvers = {
       _: unknown,
       {
         id,
-        name,
+        firstName,
+        lastName,
         phone,
         email,
-      }: { id: string; name: string; phone?: string; email?: string },
+      }: { id: string; firstName: string; lastName?: string; phone?: string; email?: string },
     ) => {
       try {
-        const updated = await updateContact(id, name, phone, email);
+        const updated = await updateContact(id, firstName, lastName, phone, email);
         if (!updated) return null;
         return {
           ...updated,
-          name: (updated.name as string)?.trim() || "Unknown",
+          firstName: (updated.firstName as string)?.trim() || "Unknown",
+          lastName: (updated.lastName as string)?.trim() || null,
           email: updated.email || "",
           phone: updated.phone || null,
         };
