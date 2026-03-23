@@ -23,8 +23,8 @@
     "build_fast": "npm i && npx tsc",
     "build_full": "npm update && npx tsc",
     "lint": "eslint **/src/**/*.ts **/tests/**/*.ts --ignore-pattern **/dist/**/*.ts --no-warn-ignored --report-unused-disable-directives --max-warnings 0 --fix",
-    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --config ./jest.config.mjs --forceExit --detectOpenHandles --coverage",
-    "test:coverage": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --config ./jest.config.mjs --forceExit --detectOpenHandles --coverage --watchAll=false",
+    "test": "vitest run --coverage",
+    "test:coverage": "vitest run --coverage",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
@@ -49,6 +49,7 @@
     "@types/supertest": "^6.0.3",
     "@typescript-eslint/eslint-plugin": "8.57.1",
     "@typescript-eslint/parser": "8.57.1",
+    "@vitest/coverage-v8": "^4.1.1",
     "babel-jest": "30.2.0",
     "cross-env": "^7.0.3",
     "eslint": "9.39.4",
@@ -62,7 +63,8 @@
     "ts-node-dev": "^2.0.0",
     "tsx": "^4.21.0",
     "typescript": "5.9.3",
-    "typescript-eslint": "8.42.0"
+    "typescript-eslint": "8.42.0",
+    "vitest": "^4.1.1"
   },
   "exports": {
     ".": "./dist/service.js"

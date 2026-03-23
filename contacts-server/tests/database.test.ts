@@ -1,4 +1,4 @@
-import { jest } from "@jest/globals";
+
 import mysql from "mysql2/promise";
 import {
   getDbConfig,
@@ -11,7 +11,7 @@ describe("Database Module", () => {
   const originalEnv = process.env;
 
   beforeEach(() => {
-    jest.resetModules();
+    vi.resetModules();
     process.env = { ...originalEnv };
   });
 
@@ -82,8 +82,8 @@ describe("Database Module", () => {
     it("should return true when connection succeeds", async () => {
       // Create a mock pool that succeeds
       const mockPool = {
-        query: jest.fn().mockResolvedValue([{ 1: 1 }]),
-        end: jest.fn(),
+        query: vi.fn().mockResolvedValue([{ 1: 1 }]),
+        end: vi.fn(),
       } as unknown as mysql.Pool;
 
       const result = await testConnection(mockPool);
@@ -95,8 +95,8 @@ describe("Database Module", () => {
     it("should return false when connection fails", async () => {
       // Create a mock pool that fails
       const mockPool = {
-        query: jest.fn().mockRejectedValue(new Error("Mock connection error")),
-        end: jest.fn(),
+        query: vi.fn().mockRejectedValue(new Error("Mock connection error")),
+        end: vi.fn(),
       } as unknown as mysql.Pool;
 
       const result = await testConnection(mockPool);
