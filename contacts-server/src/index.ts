@@ -1,19 +1,20 @@
-import { ApolloServer } from "@apollo/server";
-import { startStandaloneServer } from "@apollo/server/standalone";
+import { ApolloServer } from "apollo-server";
 import { gql } from "graphql-tag";
 import * as dotenv from "dotenv";
 
-import { getContacts, createContact, editContact, removeContact } from "./contactService.js";
-
-export { getContacts, createContact, editContact, removeContact };
+import {
+  getAllContacts,
+  addContact,
+  updateContact,
+  deleteContact,
+} from "@circles-zone/contacts-local-typescript-package";
 
 dotenv.config();
 
 const typeDefs = gql`
   type Contact {
     id: ID!
-    firstName: String!
-    lastName: String
+    name: String!
     email: String!
     phone: String
     updatedAt: String
@@ -24,8 +25,7 @@ const typeDefs = gql`
   }
 
   input AddContactInput {
-    firstName: String!
-    lastName: String
+    name: String!
     # TODO emailAddress: EmailAddress!
     email: String!
     # TODO phoneNumber: PhoneNumber!
@@ -35,7 +35,7 @@ const typeDefs = gql`
   type Mutation {
     # TODO addContact( contact : ContactLocal )
     addContact(contact: AddContactInput!): Contact
-    updateContact(id: ID!, firstName: String!, lastName: String, phone: String, email: String): Contact
+    updateContact(id: ID!, name: String!, phone: String, email: String): Contact
     deleteContact(id: ID!): Boolean!
   }
 `;
@@ -44,9 +44,22 @@ const resolvers = {
   Query: {
     contacts: async () => {
       try {
-        const contacts = await getContacts();
+        const contacts = await getAllContacts();
         console.log(`Found ${contacts.length} contacts from database`);
-        return contacts;
+        return contacts.map(
+          (contact: {
+            id: string;
+            name?: string;
+            email?: string;
+            phone?: string;
+            updatedAt?: string | null;
+          }) => ({
+            ...contact,
+            name: contact.name?.trim() || "Unknown",
+            email: contact.email || "",
+            phone: contact.phone || null,
+          }),
+        );
       } catch (error) {
         console.error("Database error:", error);
         return [];
@@ -56,10 +69,18 @@ const resolvers = {
   Mutation: {
     addContact: async (
       _: unknown,
-      { contact }: { contact: { firstName: string; lastName?: string; email: string; phone: string } },
+      // TODO email: EmailAddress
+      { contact }: { contact: { name: string; email: string; phone: string } },
     ) => {
       try {
-        return await createContact(contact.firstName, contact.lastName, contact.phone, contact.email);
+        const newContact = await addContact(contact.name, contact.phone, contact.email);
+        if (!newContact) return null;
+        return {
+          ...newContact,
+          name: (newContact.name as string)?.trim() || "Unknown",
+          email: newContact.email || "",
+          phone: newContact.phone || null,
+        };
       } catch (error) {
         console.error("Add error:", error);
         throw new Error("Failed to add contact");
@@ -67,10 +88,22 @@ const resolvers = {
     },
     updateContact: async (
       _: unknown,
-      { id, firstName, lastName, phone, email }: { id: string; firstName: string; lastName?: string; phone?: string; email?: string },
+      {
+        id,
+        name,
+        phone,
+        email,
+      }: { id: string; name: string; phone?: string; email?: string },
     ) => {
       try {
-        return await editContact(id, firstName, lastName, phone, email);
+        const updated = await updateContact(id, name, phone, email);
+        if (!updated) return null;
+        return {
+          ...updated,
+          name: (updated.name as string)?.trim() || "Unknown",
+          email: updated.email || "",
+          phone: updated.phone || null,
+        };
       } catch (error) {
         console.error("Update error:", error);
         throw new Error("Failed to update contact");
@@ -78,7 +111,7 @@ const resolvers = {
     },
     deleteContact: async (_: unknown, { id }: { id: string }) => {
       try {
-        return await removeContact(id);
+        return await deleteContact(id);
       } catch (error) {
         console.error("Delete error:", error);
         throw new Error("Failed to delete contact");
@@ -87,10 +120,17 @@ const resolvers = {
   },
 };
 
-const server = new ApolloServer({ typeDefs, resolvers });
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  cors: {
+    origin: true,
+    credentials: true,
+  },
+});
 
 const port = process.env.PORT ? Number(process.env.PORT) : 5002;
-const { url } = await startStandaloneServer(server, {
-  listen: { port },
+server.listen({ port }).then(({ url }: { url: string }) => {
+  console.log(`🚀 GraphQL Server ready at ${url}`);
+  console.log(`📊 GraphQL Playground available at ${url}`);
 });
-console.log(`🚀 GraphQL Server ready at ${url}`);

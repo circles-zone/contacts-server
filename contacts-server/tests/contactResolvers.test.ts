@@ -10,8 +10,7 @@ describe("Contact Resolvers", () => {
     it("should format contact with all fields", () => {
       const row = {
         id: "1",
-        firstName: "  John  ",
-        lastName: "  Doe  ",
+        name: "  John Doe  ",
         email: "john@example.com",
         phone: "123456789",
         updatedAt: "2024-01-01",
@@ -21,19 +20,17 @@ describe("Contact Resolvers", () => {
 
       expect(result).toEqual({
         id: "1",
-        firstName: "John",
-        lastName: "Doe",
+        name: "John Doe",
         email: "john@example.com",
         phone: "123456789",
         updatedAt: "2024-01-01",
       });
     });
 
-    it("should use default firstName when firstName is empty", () => {
+    it("should use default name when name is empty", () => {
       const row = {
         id: "1",
-        firstName: "   ",
-        lastName: null,
+        name: "   ",
         email: "john@example.com",
         phone: "123456789",
         updatedAt: "2024-01-01",
@@ -41,14 +38,13 @@ describe("Contact Resolvers", () => {
 
       const result = formatContact(row);
 
-      expect(result.firstName).toBe("Unknown");
+      expect(result.name).toBe("לא ידוע");
     });
 
-    it("should use default firstName when firstName is null", () => {
+    it("should use default name when name is null", () => {
       const row = {
         id: "1",
-        firstName: null as unknown as string,
-        lastName: null,
+        name: null,
         email: "john@example.com",
         phone: "123456789",
         updatedAt: "2024-01-01",
@@ -56,15 +52,14 @@ describe("Contact Resolvers", () => {
 
       const result = formatContact(row);
 
-      expect(result.firstName).toBe("Unknown");
+      expect(result.name).toBe("לא ידוע");
     });
 
     it("should use default email when email is missing", () => {
       const row = {
         id: "1",
-        firstName: "John",
-        lastName: null,
-        email: null as unknown as string,
+        name: "John",
+        email: null,
         phone: "123456789",
         updatedAt: "2024-01-01",
       };
@@ -77,8 +72,7 @@ describe("Contact Resolvers", () => {
     it("should set phone to null when phone is missing", () => {
       const row = {
         id: "1",
-        firstName: "John",
-        lastName: null,
+        name: "John",
         email: "john@example.com",
         phone: null,
         updatedAt: "2024-01-01",
@@ -93,7 +87,7 @@ describe("Contact Resolvers", () => {
   describe("createResolvers", () => {
     it("should create resolvers with Query.contacts", () => {
       const mockPool = {
-        query: jest.fn<() => Promise<unknown>>().mockResolvedValue([[]]),
+        query: jest.fn().mockResolvedValue([[]]),
       } as unknown as mysql.Pool;
 
       const resolvers = createResolvers(mockPool);
@@ -108,8 +102,7 @@ describe("Contact Resolvers", () => {
       const mockRows = [
         {
           id: "1",
-          firstName: "John",
-          lastName: "Doe",
+          name: "John Doe",
           email: "john@example.com",
           phone: "123456789",
           updatedAt: "2024-01-01",
@@ -117,23 +110,21 @@ describe("Contact Resolvers", () => {
       ];
 
       const mockPool = {
-        query: jest.fn<() => Promise<unknown>>().mockResolvedValue([mockRows]),
+        query: jest.fn().mockResolvedValue([mockRows]),
       } as unknown as mysql.Pool;
 
       const resolvers = createResolvers(mockPool);
       const result = await resolvers.Query.contacts();
 
       expect(result).toHaveLength(1);
-      expect(result[0].firstName).toBe("John");
-      expect(result[0].lastName).toBe("Doe");
+      expect(result[0].name).toBe("John Doe");
     });
 
-    it("should handle contacts with missing firstName (applies default)", async () => {
+    it("should handle contacts with missing name (applies default)", async () => {
       const mockRows = [
         {
           id: "1",
-          firstName: null,
-          lastName: null,
+          name: null,
           email: "john@example.com",
           phone: "123456789",
           updatedAt: "2024-01-01",
@@ -141,22 +132,21 @@ describe("Contact Resolvers", () => {
       ];
 
       const mockPool = {
-        query: jest.fn<() => Promise<unknown>>().mockResolvedValue([mockRows]),
+        query: jest.fn().mockResolvedValue([mockRows]),
       } as unknown as mysql.Pool;
 
       const resolvers = createResolvers(mockPool);
       const result = await resolvers.Query.contacts();
 
       expect(result).toHaveLength(1);
-      expect(result[0].firstName).toBe("Unknown");
+      expect(result[0].name).toBe("לא ידוע");
     });
 
-    it("should handle contacts with whitespace-only firstName", async () => {
+    it("should handle contacts with whitespace-only name", async () => {
       const mockRows = [
         {
           id: "1",
-          firstName: "   ",
-          lastName: null,
+          name: "   ",
           email: "john@example.com",
           phone: "123456789",
           updatedAt: "2024-01-01",
@@ -164,22 +154,21 @@ describe("Contact Resolvers", () => {
       ];
 
       const mockPool = {
-        query: jest.fn<() => Promise<unknown>>().mockResolvedValue([mockRows]),
+        query: jest.fn().mockResolvedValue([mockRows]),
       } as unknown as mysql.Pool;
 
       const resolvers = createResolvers(mockPool);
       const result = await resolvers.Query.contacts();
 
       expect(result).toHaveLength(1);
-      expect(result[0].firstName).toBe("Unknown");
+      expect(result[0].name).toBe("לא ידוע");
     });
 
     it("should handle contacts with missing email (applies default)", async () => {
       const mockRows = [
         {
           id: "1",
-          firstName: "John",
-          lastName: "Doe",
+          name: "John Doe",
           email: null,
           phone: "123456789",
           updatedAt: "2024-01-01",
@@ -187,7 +176,7 @@ describe("Contact Resolvers", () => {
       ];
 
       const mockPool = {
-        query: jest.fn<() => Promise<unknown>>().mockResolvedValue([mockRows]),
+        query: jest.fn().mockResolvedValue([mockRows]),
       } as unknown as mysql.Pool;
 
       const resolvers = createResolvers(mockPool);
@@ -201,8 +190,7 @@ describe("Contact Resolvers", () => {
       const mockRows = [
         {
           id: "1",
-          firstName: "John",
-          lastName: "Doe",
+          name: "John Doe",
           email: "john@example.com",
           phone: null,
           updatedAt: "2024-01-01",
@@ -210,7 +198,7 @@ describe("Contact Resolvers", () => {
       ];
 
       const mockPool = {
-        query: jest.fn<() => Promise<unknown>>().mockResolvedValue([mockRows]),
+        query: jest.fn().mockResolvedValue([mockRows]),
       } as unknown as mysql.Pool;
 
       const resolvers = createResolvers(mockPool);
@@ -222,7 +210,7 @@ describe("Contact Resolvers", () => {
 
     it("should return empty array on database error", async () => {
       const mockPool = {
-        query: jest.fn<() => Promise<unknown>>().mockRejectedValue(new Error("DB Error")),
+        query: jest.fn().mockRejectedValue(new Error("DB Error")),
       } as unknown as mysql.Pool;
 
       const resolvers = createResolvers(mockPool);
@@ -233,7 +221,7 @@ describe("Contact Resolvers", () => {
 
     it("should handle empty result set", async () => {
       const mockPool = {
-        query: jest.fn<() => Promise<unknown>>().mockResolvedValue([[]]),
+        query: jest.fn().mockResolvedValue([[]]),
       } as unknown as mysql.Pool;
 
       const resolvers = createResolvers(mockPool);
