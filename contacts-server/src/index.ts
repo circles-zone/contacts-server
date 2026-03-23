@@ -3,12 +3,9 @@ import { startStandaloneServer } from "@apollo/server/standalone";
 import { gql } from "graphql-tag";
 import * as dotenv from "dotenv";
 
-import {
-  getAllContacts,
-  addContact,
-  updateContact,
-  deleteContact,
-} from "@circles-zone/contacts-local-typescript-package";
+import { getContacts, createContact, editContact, removeContact } from "./contactService.js";
+
+export { getContacts, createContact, editContact, removeContact };
 
 dotenv.config();
 
@@ -47,26 +44,9 @@ const resolvers = {
   Query: {
     contacts: async () => {
       try {
-        const contacts = await getAllContacts();
+        const contacts = await getContacts();
         console.log(`Found ${contacts.length} contacts from database`);
-        return contacts.map(
-          (contact: {
-            id: string;
-            firstName?: string;
-            lastName?: string;
-            email?: string;
-            phone?: string;
-            updatedAt?: string | null;
-          }) => {
-            return {
-              ...contact,
-              firstName: contact.firstName?.trim() || "Unknown",
-              lastName: contact.lastName?.trim() || null,
-              email: contact.email || "",
-              phone: contact.phone || null,
-            };
-          },
-        );
+        return contacts;
       } catch (error) {
         console.error("Database error:", error);
         return [];
@@ -76,19 +56,10 @@ const resolvers = {
   Mutation: {
     addContact: async (
       _: unknown,
-      // TODO email: EmailAddress
       { contact }: { contact: { firstName: string; lastName?: string; email: string; phone: string } },
     ) => {
       try {
-        const newContact = await addContact(contact.firstName, contact.lastName, contact.phone, contact.email);
-        if (!newContact) return null;
-        return {
-          ...newContact,
-          firstName: (newContact.firstName as string)?.trim() || "Unknown",
-          lastName: (newContact.lastName as string)?.trim() || null,
-          email: newContact.email || "",
-          phone: newContact.phone || null,
-        };
+        return await createContact(contact.firstName, contact.lastName, contact.phone, contact.email);
       } catch (error) {
         console.error("Add error:", error);
         throw new Error("Failed to add contact");
@@ -96,24 +67,10 @@ const resolvers = {
     },
     updateContact: async (
       _: unknown,
-      {
-        id,
-        firstName,
-        lastName,
-        phone,
-        email,
-      }: { id: string; firstName: string; lastName?: string; phone?: string; email?: string },
+      { id, firstName, lastName, phone, email }: { id: string; firstName: string; lastName?: string; phone?: string; email?: string },
     ) => {
       try {
-        const updated = await updateContact(id, firstName, lastName, phone, email);
-        if (!updated) return null;
-        return {
-          ...updated,
-          firstName: (updated.firstName as string)?.trim() || "Unknown",
-          lastName: (updated.lastName as string)?.trim() || null,
-          email: updated.email || "",
-          phone: updated.phone || null,
-        };
+        return await editContact(id, firstName, lastName, phone, email);
       } catch (error) {
         console.error("Update error:", error);
         throw new Error("Failed to update contact");
@@ -121,7 +78,7 @@ const resolvers = {
     },
     deleteContact: async (_: unknown, { id }: { id: string }) => {
       try {
-        return await deleteContact(id);
+        return await removeContact(id);
       } catch (error) {
         console.error("Delete error:", error);
         throw new Error("Failed to delete contact");
