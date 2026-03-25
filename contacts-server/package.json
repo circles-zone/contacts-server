@@ -36,7 +36,9 @@
     "@apollo/client": ">=4.0.11",
     "@circles-zone/contacts-local-typescript-package": "file:../../contacts-local-typescript-package/contacts-local-typescript-package",
     "apollo-server": "^3.13.0",
+    "cors": "^2.8.6",
     "dotenv": ">=17.2.3",
+    "express": "^4.22.1",
     "graphql": ">=16.12.0",
     "graphql-tag": ">=2.12.6",
     "mysql2": ">=3.16.0"
@@ -44,6 +46,8 @@
   "devDependencies": {
     "@babel/preset-env": "7.28.5",
     "@babel/preset-typescript": "7.28.5",
+    "@types/cors": ">=2.8.17",
+    "@types/express": ">=5.0.0",
     "@types/jest": "^29.5.12",
     "@types/node": "24.3.1",
     "@types/supertest": "^6.0.3",

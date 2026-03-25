@@ -1,6 +1,9 @@
 import { ApolloServer } from "apollo-server";
 import { gql } from "graphql-tag";
 import * as dotenv from "dotenv";
+import express from "express";
+import cors from "cors";
+import mysql from "mysql2/promise";
 
 import {
   getAllContacts,
@@ -137,4 +140,49 @@ const port = process.env.PORT ? Number(process.env.PORT) : 5002;
 server.listen({ port }).then(({ url }: { url: string }) => {
   console.log(`🚀 GraphQL Server ready at ${url}`);
   console.log(`📊 GraphQL Playground available at ${url}`);
+});
+
+// Logger REST API (separate Express server)
+const loggerApp = express();
+loggerApp.use(cors());
+loggerApp.use(express.json());
+
+loggerApp.post("/:environmentName/api/v0/logger/createLog", async (req, res) => {
+  const body = req.body;
+  try {
+    const pool = mysql.createPool({
+      host: process.env.MYSQL_HOST,
+      user: process.env.MYSQL_USER,
+      password: process.env.MYSQL_PASSWORD,
+      database: "logger",
+      port: Number(process.env.MYSQL_PORT) || 3306,
+    });
+    await pool.query(
+      `INSERT INTO logger_table
+        (message, component_id, component_name, filename, function_name, line_number, severity_id, api_type, component_category, developer_email_address, payload, timestamp)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())`,
+      [
+        body.message || body.messageInternalEnglish || null,
+        body.componentId || body.component_id || null,
+        body.componentName || body.component_name || null,
+        body.filename || null,
+        body.functionName || body.function_name || null,
+        body.lineNumber > 0 ? body.lineNumber : body.line_number > 0 ? body.line_number : null,
+        body.severityId || body.severity_id || null,
+        body.apiType || body.api_type || null,
+        body.componentCategory || body.component_category || null,
+        body.developerEmailAddress || body.developer_email_address || null,
+        body.payload ? JSON.stringify(body.payload) : null,
+      ]
+    );
+    res.json({ success: true });
+  } catch (error) {
+    console.error("Logger endpoint error:", error);
+    res.status(500).json({ success: false });
+  }
+});
+
+const loggerPort = process.env.LOGGER_PORT ? Number(process.env.LOGGER_PORT) : 5003;
+loggerApp.listen(loggerPort, () => {
+  console.log(`📋 Logger REST API ready at http://localhost:${loggerPort}`);
 });
