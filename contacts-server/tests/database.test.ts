@@ -1,11 +1,14 @@
-
-import mysql from "mysql2/promise";
 import {
   getDbConfig,
   testConnection,
   createPool,
   DbConfig,
 } from "../src/db/database";
+
+type PoolLike = {
+  query: ReturnType<typeof vi.fn>;
+  end: ReturnType<typeof vi.fn>;
+};
 
 describe("Database Module", () => {
   const originalEnv = process.env;
@@ -84,7 +87,7 @@ describe("Database Module", () => {
       const mockPool = {
         query: vi.fn().mockResolvedValue([{ 1: 1 }]),
         end: vi.fn(),
-      } as unknown as mysql.Pool;
+      } as PoolLike;
 
       const result = await testConnection(mockPool);
 
@@ -97,7 +100,7 @@ describe("Database Module", () => {
       const mockPool = {
         query: vi.fn().mockRejectedValue(new Error("Mock connection error")),
         end: vi.fn(),
-      } as unknown as mysql.Pool;
+      } as PoolLike;
 
       const result = await testConnection(mockPool);
 

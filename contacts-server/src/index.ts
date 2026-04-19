@@ -4,6 +4,7 @@ import * as dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
 import mysql from "mysql2/promise";
+import { MYSQL_DEFAULT_PORT } from "./db/database.js";
 
 import {
   getAllContacts,
@@ -31,13 +32,20 @@ const typeDefs = gql`
   input AddContactInput {
     firstName: String!
     lastName: String
+    # TODO emailAddress: EmailAddress!
     email: String!
     phone: String!
   }
 
   type Mutation {
     addContact(contact: AddContactInput!): Contact
-    updateContact(id: ID!, firstName: String!, lastName: String, phone: String, email: String): Contact
+    updateContact(
+      id: ID!
+      firstName: String!
+      lastName: String
+      phone: String
+      email: String
+    ): Contact
     deleteContact(id: ID!): Boolean!
   }
 `;
@@ -74,10 +82,24 @@ const resolvers = {
     addContact: async (
       _: unknown,
       // TODO email: EmailAddress
-      { contact }: { contact: { firstName: string; lastName?: string; email: string; phone: string } },
+      {
+        contact,
+      }: {
+        contact: {
+          firstName: string;
+          lastName?: string;
+          email: string;
+          phone: string;
+        };
+      },
     ) => {
       try {
-        const newContact = await addContact(contact.firstName, contact.lastName, contact.phone, contact.email);
+        const newContact = await addContact(
+          contact.firstName,
+          contact.lastName,
+          contact.phone,
+          contact.email,
+        );
         if (!newContact) return null;
         return {
           ...newContact,
@@ -99,10 +121,22 @@ const resolvers = {
         lastName,
         phone,
         email,
-      }: { id: string; firstName: string; lastName?: string; phone?: string; email?: string },
+      }: {
+        id: string;
+        firstName: string;
+        lastName?: string;
+        phone?: string;
+        email?: string;
+      },
     ) => {
       try {
-        const updated = await updateContact(id, firstName, lastName, phone, email);
+        const updated = await updateContact(
+          id,
+          firstName,
+          lastName,
+          phone,
+          email,
+        );
         if (!updated) return null;
         return {
           ...updated,
@@ -155,12 +189,17 @@ const loggerPool = mysql.createPool({
   user: process.env.MYSQL_USER,
   password: process.env.MYSQL_PASSWORD,
   database: process.env.LOGGER_DB || "logger",
-  port: Number(process.env.MYSQL_PORT) || 3306,
+  port: Number(process.env.MYSQL_PORT) || MYSQL_DEFAULT_PORT,
   connectionLimit: 10,
   waitForConnections: true,
 });
 
-loggerApp.post("/:environmentName/api/v0/logger/createLog", async (req, res) => {
+const LOGGER_PRIMARY_VERSION = "v1";
+
+const createLogHandler = async (
+  req: express.Request,
+  res: express.Response,
+) => {
   const body = req.body;
   try {
     await loggerPool.query(
@@ -173,22 +212,35 @@ loggerApp.post("/:environmentName/api/v0/logger/createLog", async (req, res) => 
         body.componentName || body.component_name || null,
         body.filename || null,
         body.functionName || body.function_name || null,
-        body.lineNumber > 0 ? body.lineNumber : body.line_number > 0 ? body.line_number : null,
+        body.lineNumber > 0
+          ? body.lineNumber
+          : body.line_number > 0
+            ? body.line_number
+            : null,
         body.severityId || body.severity_id || null,
         body.apiType || body.api_type || null,
         body.componentCategory || body.component_category || null,
         body.developerEmailAddress || body.developer_email_address || null,
         body.payload ? JSON.stringify(body.payload) : null,
-      ]
+      ],
     );
     res.json({ success: true });
   } catch (error) {
     console.error("Logger endpoint error:", error);
     res.status(500).json({ success: false });
   }
-});
+};
 
-const loggerPort = process.env.LOGGER_PORT ? Number(process.env.LOGGER_PORT) : 5003;
+loggerApp.post(
+  `/:environmentName/api/${LOGGER_PRIMARY_VERSION}/logger/createLog`,
+  createLogHandler,
+);
+// Backward-compatible route for existing clients still using v0.
+loggerApp.post("/:environmentName/api/v0/logger/createLog", createLogHandler);
+
+const loggerPort = process.env.LOGGER_PORT
+  ? Number(process.env.LOGGER_PORT)
+  : 5003;
 loggerApp.listen(loggerPort, () => {
   console.log(`📋 Logger REST API ready at http://localhost:${loggerPort}`);
 });

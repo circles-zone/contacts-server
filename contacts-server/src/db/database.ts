@@ -5,6 +5,8 @@ import * as dotenv from "dotenv";
 
 dotenv.config();
 
+export const MYSQL_DEFAULT_PORT = 3306;
+
 export interface DbConfig {
   host: string | undefined;
   user: string | undefined;
@@ -27,7 +29,7 @@ export function getDbConfig(): DbConfig {
       : process.env.MYSQL_DATABASE,
     port:
       Number(isCloud ? process.env.AWS_RDS_PORT : process.env.MYSQL_PORT) ||
-      3306,
+      MYSQL_DEFAULT_PORT,
   };
 }
 
