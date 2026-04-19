@@ -147,17 +147,23 @@ const loggerApp = express();
 loggerApp.use(cors());
 loggerApp.use(express.json());
 
+// Create the logger pool once at module scope — NOT inside the request handler.
+// Creating a new pool per request causes connection exhaustion under even
+// moderate load (each pool holds up to 10 connections and is never closed).
+const loggerPool = mysql.createPool({
+  host: process.env.MYSQL_HOST,
+  user: process.env.MYSQL_USER,
+  password: process.env.MYSQL_PASSWORD,
+  database: process.env.LOGGER_DB || "logger",
+  port: Number(process.env.MYSQL_PORT) || 3306,
+  connectionLimit: 10,
+  waitForConnections: true,
+});
+
 loggerApp.post("/:environmentName/api/v0/logger/createLog", async (req, res) => {
   const body = req.body;
   try {
-    const pool = mysql.createPool({
-      host: process.env.MYSQL_HOST,
-      user: process.env.MYSQL_USER,
-      password: process.env.MYSQL_PASSWORD,
-      database: "logger",
-      port: Number(process.env.MYSQL_PORT) || 3306,
-    });
-    await pool.query(
+    await loggerPool.query(
       `INSERT INTO logger_table
         (message, component_id, component_name, filename, function_name, line_number, severity_id, api_type, component_category, developer_email_address, payload, timestamp)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())`,
