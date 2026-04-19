@@ -31,7 +31,14 @@ beforeEach(() => {
 describe("getContacts", () => {
   it("returns mapped contacts", async () => {
     mockGetAll.mockResolvedValueOnce([
-      { id: "1", firstName: " Alice ", lastName: " Smith ", email: "a@test.com", phone: "123", updatedAt: "2024-01-01" },
+      {
+        id: "1",
+        firstName: " Alice ",
+        lastName: " Smith ",
+        email: "a@test.com",
+        phone: "123",
+        updatedAt: "2024-01-01",
+      },
     ]);
     const result = await getContacts();
     expect(result[0].firstName).toBe("Alice");
@@ -40,11 +47,19 @@ describe("getContacts", () => {
 
   it("defaults firstName to Unknown when empty", async () => {
     mockGetAll.mockResolvedValueOnce([
-      { id: "1", firstName: "  ", lastName: null, email: null, phone: null, updatedAt: null },
+      {
+        id: "1",
+        firstName: "  ",
+        lastName: null,
+        email: null,
+        phone: null,
+        updatedAt: null,
+      },
     ]);
     const result = await getContacts();
     expect(result[0].firstName).toBe("Unknown");
     expect(result[0].lastName).toBeNull();
+    expect(result[0].emailAddress).toBe("");
     expect(result[0].email).toBe("");
     expect(result[0].phone).toBeNull();
   });
@@ -52,9 +67,16 @@ describe("getContacts", () => {
 
 describe("createContact", () => {
   it("returns created contact", async () => {
-    mockAdd.mockResolvedValueOnce({ id: "2", firstName: " Bob ", lastName: null, email: "b@test.com", phone: "555" });
+    mockAdd.mockResolvedValueOnce({
+      id: "2",
+      firstName: " Bob ",
+      lastName: null,
+      email: "b@test.com",
+      phone: "555",
+    });
     const result = await createContact("Bob", undefined, "555", "b@test.com");
     expect(result!.firstName).toBe("Bob");
+    expect(result!.emailAddress).toBe("b@test.com");
   });
 
   it("returns null when addContact returns null", async () => {
@@ -64,19 +86,39 @@ describe("createContact", () => {
   });
 
   it("defaults firstName to Unknown when empty", async () => {
-    mockAdd.mockResolvedValueOnce({ id: "3", firstName: "  ", lastName: "  ", email: null, phone: null });
+    mockAdd.mockResolvedValueOnce({
+      id: "3",
+      firstName: "  ",
+      lastName: "  ",
+      email: null,
+      phone: null,
+    });
     const result = await createContact("  ", undefined, "", "");
     expect(result!.firstName).toBe("Unknown");
     expect(result!.lastName).toBeNull();
+    expect(result!.emailAddress).toBe("");
     expect(result!.email).toBe("");
   });
 });
 
 describe("editContact", () => {
   it("returns updated contact", async () => {
-    mockUpdate.mockResolvedValueOnce({ id: "1", firstName: " Updated ", lastName: " Last ", email: "u@test.com", phone: "999" });
-    const result = await editContact("1", "Updated", "Last", "999", "u@test.com");
+    mockUpdate.mockResolvedValueOnce({
+      id: "1",
+      firstName: " Updated ",
+      lastName: " Last ",
+      email: "u@test.com",
+      phone: "999",
+    });
+    const result = await editContact(
+      "1",
+      "Updated",
+      "Last",
+      "999",
+      "u@test.com",
+    );
     expect(result!.firstName).toBe("Updated");
+    expect(result!.emailAddress).toBe("u@test.com");
   });
 
   it("returns null when updateContact returns null", async () => {
@@ -86,7 +128,13 @@ describe("editContact", () => {
   });
 
   it("defaults firstName to Unknown when empty", async () => {
-    mockUpdate.mockResolvedValueOnce({ id: "1", firstName: "", lastName: "  ", email: null, phone: null });
+    mockUpdate.mockResolvedValueOnce({
+      id: "1",
+      firstName: "",
+      lastName: "  ",
+      email: null,
+      phone: null,
+    });
     const result = await editContact("1", "");
     expect(result!.firstName).toBe("Unknown");
     expect(result!.lastName).toBeNull();
