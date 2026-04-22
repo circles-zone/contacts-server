@@ -43,7 +43,7 @@ importers:
         specifier: 7.28.5
         version: 7.28.5(@babel/core@7.29.0)
       '@eslint/js':
-        specifier: ^10.0.1
+        specifier: ^10.0.0
         version: 10.0.1(eslint@10.2.1)
       '@types/cors':
         specifier: '>=2.8.17'
@@ -55,7 +55,7 @@ importers:
         specifier: ^29.5.12
         version: 29.5.14
       '@types/node':
-        specifier: 25.6.0
+        specifier: ^25.0.0
         version: 25.6.0
       '@types/supertest':
         specifier: ^6.0.3
@@ -76,7 +76,7 @@ importers:
         specifier: ^7.0.3
         version: 7.0.3
       eslint:
-        specifier: ^10.2.1
+        specifier: ^10.2.0
         version: 10.2.1
       husky:
         specifier: ^9.1.4
@@ -106,7 +106,7 @@ importers:
         specifier: ^4.21.0
         version: 4.21.0
       typescript:
-        specifier: ^6.0.3
+        specifier: ^6.0.2
         version: 6.0.3
       typescript-eslint:
         specifier: 8.58.1
