@@ -1,3 +1,10 @@
+import { vi } from "vitest";
+
+vi.mock("@circles-zone/logger-remote", () => ({
+  loggerRemote: () => ({ init: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn(), start: vi.fn(), end: vi.fn(), exception: vi.fn() }),
+  ComponentCategory: { Code: "Code" },
+  ComputerLanguage: { NodeJS: "Node.js" },
+}));
 
 import mysql from "mysql2/promise";
 import {

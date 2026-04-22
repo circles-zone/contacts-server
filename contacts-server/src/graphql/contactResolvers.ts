@@ -1,4 +1,16 @@
 import { Pool } from "mysql2/promise";
+import { loggerRemote, ComponentCategory } from "@circles-zone/logger-remote";
+
+const logger = loggerRemote(
+  process.env.BRAND_NAME || "Circlez",
+  process.env.ENVIRONMENT_NAME || process.env.ENVIRONMENT || "local"
+);
+const loggerFields = {
+  componentId: 6,
+  componentName: "contacts-server-graphql",
+  componentCategory: ComponentCategory.Code,
+};
+logger.init("contactResolvers started", loggerFields);
 
 // TODO after we add other database tables which are linked to contact_table will Contact be exactly is the DatabaeRaw interface? If so it is redundant.
 export interface Contact {
@@ -39,16 +51,17 @@ export function createResolvers(pool: Pool) {
           `;
           const [rows] = await pool.query(query, [50]);
 
-          return (rows as DbRow[]).map((row) => ({
+          const contacts = (rows as DbRow[]).map((row) => ({
             ...row,
             name: row.name?.trim() || "לא ידוע",
             email: row.email || "unknown@example.com",
             phone: row.phone || null,
             updatedAt: row.updatedAt,
           }));
+          logger.info("contacts query succeeded", { ...loggerFields, count: contacts.length });
+          return contacts;
         } catch (error) {
-          // TODO make sure every place we call console.* we call our logger from logger-remote-typescript-package
-          console.error("Database error:", error);
+          logger.error("contacts query failed", { ...loggerFields, error: String(error) });
           return [];
         }
       },
