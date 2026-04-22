@@ -110,7 +110,7 @@ const resolvers = {
         };
       } catch (error) {
         console.error("Add error:", error);
-        throw new Error("Failed to add contact");
+        throw new Error("Failed to add contact", { cause: error });
       }
     },
     updateContact: async (
@@ -147,7 +147,7 @@ const resolvers = {
         };
       } catch (error) {
         console.error("Update error:", error);
-        throw new Error("Failed to update contact");
+        throw new Error("Failed to update contact", { cause: error });
       }
     },
     deleteContact: async (_: unknown, { id }: { id: string }) => {
@@ -155,7 +155,7 @@ const resolvers = {
         return await deleteContact(id);
       } catch (error) {
         console.error("Delete error:", error);
-        throw new Error("Failed to delete contact");
+        throw new Error("Failed to delete contact", { cause: error });
       }
     },
   },

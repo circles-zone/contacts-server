@@ -38,8 +38,7 @@ export async function createContact(
 ) {
   const newContact = await addContact(firstName, lastName, phone, emailAddress);
   if (!newContact) return null;
-  const normalizedEmailAddress =
-    newContact.emailAddress || newContact.email || "";
+  const normalizedEmailAddress = newContact.email || "";
   return {
     ...newContact,
     firstName: (newContact.firstName as string)?.trim() || "Unknown",
@@ -65,7 +64,7 @@ export async function editContact(
     emailAddress,
   );
   if (!updated) return null;
-  const normalizedEmailAddress = updated.emailAddress || updated.email || "";
+  const normalizedEmailAddress = updated.email || "";
   return {
     ...updated,
     firstName: (updated.firstName as string)?.trim() || "Unknown",
