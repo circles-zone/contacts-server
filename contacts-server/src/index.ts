@@ -12,8 +12,20 @@ import {
   updateContact,
   deleteContact,
 } from "@circles-zone/contacts-local-typescript-package";
+import { loggerRemote, ComponentCategory } from "@circles-zone/logger-remote";
 
 dotenv.config();
+
+const logger = loggerRemote(
+  process.env.BRAND_NAME || "Circlez",
+  process.env.ENVIRONMENT_NAME || "local"
+);
+const logFields = {
+  componentId: 5002,
+  componentName: "contacts-server",
+  componentCategory: ComponentCategory.Code,
+};
+logger.init("contacts-server started", logFields);
 
 const typeDefs = gql`
   type Contact {
@@ -55,7 +67,7 @@ const resolvers = {
     contacts: async () => {
       try {
         const contacts = await getAllContacts();
-        console.log(`Found ${contacts.length} contacts from database`);
+        logger.info(`contacts query: found ${contacts.length} contacts`, logFields);
         return contacts.map(
           (contact: {
             id: string;
@@ -73,7 +85,7 @@ const resolvers = {
           }),
         );
       } catch (error) {
-        console.error("Database error:", error);
+        logger.error("contacts query failed", { ...logFields, error: String(error) });
         return [];
       }
     },
@@ -101,6 +113,7 @@ const resolvers = {
           contact.email,
         );
         if (!newContact) return null;
+        logger.info("addContact succeeded", { ...logFields, email: contact.email });
         return {
           ...newContact,
           firstName: (newContact.firstName as string)?.trim() || "Unknown",
@@ -109,7 +122,7 @@ const resolvers = {
           phone: newContact.phone || null,
         };
       } catch (error) {
-        console.error("Add error:", error);
+        logger.error("addContact failed", { ...logFields, error: String(error) });
         throw new Error("Failed to add contact", { cause: error });
       }
     },
@@ -138,6 +151,7 @@ const resolvers = {
           email,
         );
         if (!updated) return null;
+        logger.info("updateContact succeeded", { ...logFields, id });
         return {
           ...updated,
           firstName: (updated.firstName as string)?.trim() || "Unknown",
@@ -146,7 +160,7 @@ const resolvers = {
           phone: updated.phone || null,
         };
       } catch (error) {
-        console.error("Update error:", error);
+        logger.error("updateContact failed", { ...logFields, error: String(error) });
         throw new Error("Failed to update contact", { cause: error });
       }
     },
@@ -154,7 +168,7 @@ const resolvers = {
       try {
         return await deleteContact(id);
       } catch (error) {
-        console.error("Delete error:", error);
+        logger.error("deleteContact failed", { ...logFields, error: String(error) });
         throw new Error("Failed to delete contact", { cause: error });
       }
     },
@@ -172,8 +186,8 @@ const server = new ApolloServer({
 
 const port = process.env.PORT ? Number(process.env.PORT) : 5002;
 server.listen({ port }).then(({ url }: { url: string }) => {
-  console.log(`🚀 GraphQL Server ready at ${url}`);
-  console.log(`📊 GraphQL Playground available at ${url}`);
+  logger.info(`GraphQL Server ready at ${url}`, logFields);
+  logger.info(`GraphQL Playground available at ${url}`, logFields);
 });
 
 // Logger REST API (separate Express server)
@@ -226,7 +240,7 @@ const createLogHandler = async (
     );
     res.json({ success: true });
   } catch (error) {
-    console.error("Logger endpoint error:", error);
+    logger.error("Logger endpoint error", { ...logFields, error: String(error) });
     res.status(500).json({ success: false });
   }
 };
@@ -242,5 +256,5 @@ const loggerPort = process.env.LOGGER_PORT
   ? Number(process.env.LOGGER_PORT)
   : 5003;
 loggerApp.listen(loggerPort, () => {
-  console.log(`📋 Logger REST API ready at http://localhost:${loggerPort}`);
+  logger.info(`Logger REST API ready at http://localhost:${loggerPort}`, logFields);
 });

@@ -6,7 +6,7 @@ const logger = loggerRemote(
   process.env.ENVIRONMENT_NAME || process.env.ENVIRONMENT || "local"
 );
 const loggerFields = {
-  componentId: 6,
+  componentId: 5002,
   componentName: "contacts-server-graphql",
   componentCategory: ComponentCategory.Code,
 };

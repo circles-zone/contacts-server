@@ -1,5 +1,18 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
+vi.mock("@circles-zone/logger-remote", () => ({
+  loggerRemote: vi.fn(() => ({
+    init: vi.fn(),
+    start: vi.fn(),
+    end: vi.fn(),
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+    exception: vi.fn(),
+  })),
+  ComponentCategory: { Code: "Code" },
+}));
+
 const { mockGetAll, mockAdd, mockUpdate, mockDelete } = vi.hoisted(() => ({
   mockGetAll: vi.fn(),
   mockAdd: vi.fn(),
