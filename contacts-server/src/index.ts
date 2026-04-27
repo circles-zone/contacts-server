@@ -218,10 +218,12 @@ const createLogHandler = async (
   try {
     await loggerPool.query(
       `INSERT INTO logger_table
-        (message, component_id, component_name, filename, function_name, line_number, severity_id, api_type, component_category, developer_email_address, payload, timestamp)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())`,
+        (message, record, path, component_id, component_name, filename, function_name, line_number, severity_id, api_type, component_category, developer_email_address, payload, timestamp)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())`,
       [
-        body.message || body.messageInternalEnglish || null,
+        body.message || body.messageInternalEnglish || "",
+        body.record || "",
+        body.path || "",
         body.componentId || body.component_id || null,
         body.componentName || body.component_name || null,
         body.filename || null,

@@ -36,7 +36,7 @@ export function createResolvers(pool: Pool) {
       // TODO We might need more resolvers to bring data from other tables linked to contact_tables i.e. email_address, text_block, url ...
       contacts: async (): Promise<Contact[]> => {
         try {
-          // TODO let's have two altermatives to access the databse 1. direct 2. via GenericCrudMysql from database-mysql-local-python-package and compare the performance
+          // TODO let's have two alternatives to access the database 1. direct 2. via database package and compare the performance
           const query = `
             SELECT 
               v.contact_id AS id, 
